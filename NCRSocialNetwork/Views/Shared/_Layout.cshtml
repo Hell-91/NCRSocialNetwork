@@ -24,7 +24,10 @@
                     <li>@Html.ActionLink((string)@Club.ClubName, (string)@Club.ClubId.ToString(), "Clubs", null, new {@class = "menu-item", @id = ++i })</li>
                 }
                 <li>@Html.ActionLink("Profile", (string)@Model.BaseUser.UserId.ToString(), "UserProfile", null, new { @class = "menu-item", @id = "P" })</li>
-                <li>@Html.ActionLink("Admin", "", "Admin", null, new { @class = "menu-item", @id = "A" })</li>	
+                @if(@Model.BaseUser.UserRole == "Admin" || @Model.BaseUser.UserRole == "Moderator")
+                {
+                    <li>@Html.ActionLink("Admin", "", "Admin", null, new { @class = "menu-item", @id = "A" })</li>
+                }	
 			</ul>				
 		</nav>
         <input value ="@i" id="total_clubs" hidden />
