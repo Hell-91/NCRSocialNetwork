@@ -1,0 +1,6 @@
+﻿Added the connection string to the Web.Config file.
+Successfully registered the assembly 'System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089' in the Web.Config file.
+Generated model file: NCRSocialNetworkDataModel.edmx.
+Loading metadata from the database took 00:00:00.7042977.
+Generating the model took 00:00:01.2961094.
+Successfully registered the assembly 'System.Data.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089' in the Web.Config file.

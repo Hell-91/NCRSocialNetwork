@@ -1,0 +1,26 @@
+﻿@model NCRSocialNetwork.ViewModels.ProfileViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form class="form-settings" action="~/Profile/Create" method="post" enctype="multipart/form-data">
+    <div class="form_settings">
+		<p><span>First Name:</span> <input type = 'text' id="UserFirstName" name='UserFirstName' /></p>
+		<p><span>Last Name:</span> <input type = 'text' id="UserLastName" name='UserLastName' /></p>
+		<p><span>Email:</span> <input type = 'text' id="UserEmail" name='UserEmail' /></p>
+		<p><span>Contact No:</span> <input type = 'text' id="UserContactNo" name='UserContactNo' /></p>
+		<p><span>Hobbies:</span> <input type = 'text' id="UserHobbies" name='UserHobbies' /></p>
+		<p><span>Technologies:</span> <input type = 'text' id="UserTechnologies" name='UserTechnologies' /></p>
+		<p><span>Display Picture:</span> <input type = 'file' id="UserDisplayPicture" name='UserDisplayPicture' style="float:right;"/></p>
+		<p><span>&nbsp</span>
+             <input class = 'submit' type = 'submit' value = 'Submit'>
+		    <input class = 'submit' type = 'reset' value = 'Clear'>
+		 </p>
+	</div>
+</form>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

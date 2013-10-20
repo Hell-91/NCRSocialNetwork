@@ -1,0 +1,240 @@
+﻿@model NCRSocialNetwork.ViewModels.AdminViewModel
+
+@{
+    ViewBag.Title = "Admin Panel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--Main Section: Actual website data goes in this section-->
+<section id="main_section">
+    <img src="~/Content/Images/admin-panel.png" width="97%" alt="A" style="padding-left: 1em; padding-right: 1em; padding-bottom: 1em;"/>
+	<br>
+    <ul class="tabs">
+	    <li><a href="#tab-1">Event Requests</a></li>
+        <li><a href="#tab-2">Events</a></li>
+        <li><a href="#tab-3">Clubs</a></li>
+        <li><a href="#tab-4">New Event</a></li>
+        <li><a href="#tab-5">New Moderator</a></li>
+        <li><a href="#tab-6">New Club</a></li>
+    </ul>
+	<div class="articles-section">
+	    <br />
+	    <div class="all-data-div" id="tab-1">
+
+            @if(@Model.EventRequests.Count() > 0) {			   
+                <table>
+				    <tr>
+                        <th>S.No</th>
+					    <th>Event</th>
+					    <th>Club</th>
+					    <th>Requested By</th>
+					    <th></th>
+				    </tr>
+
+                    @{
+                        var i = 1;    
+                    }
+				    @foreach(var Event in @Model.EventRequests) 
+                    {
+                        <tr id="TD_@Event.EventRequestId">
+                            <td>@i</td>
+					        <td>@Event.EventRequestEventTitle</td>
+					        <td>@Event.Club.ClubName</td>
+					        <td>@Event.User.UserFirstName</td>
+					        <td>                                
+						        <input type="button" onclick="showAddEvent('@i')" id="" value="Add" 
+                                    @if(Event.EventRequestFlag == "false")
+                                    { 
+                                        @Html.Raw("disabled") 
+                                    }
+                                />
+						        <input type="button" onclick="" id="D_@Event.EventRequestId" value="Delete"/>
+                                @{
+                                    i++;
+                                }
+					        </td>
+				        </tr>
+                    }
+			    </table>
+                <input type="text" value="@i" id="totalEventRequests" hidden />
+                {i = 0;}
+                foreach(var Event in @Model.EventRequests) 
+                {
+                    {
+                        i++;
+                    }
+                    <div id="new-event-section" class="articles-section">
+                        <form class="form-settings hidden" action="/NCRSocialNetwork/Event/Create" method="post" id="F_@i" on>
+	                        <div class="form_settings">
+			                    <p><span>Event Title:</span> <input type = 'text' id="EventName" name='EventName' value="@Event.EventRequestEventTitle"/></p>
+			                    <p><span>Description:</span> <textarea id="EventDescription" name="EventDescription">@Event.EventRequestEventDescription</textarea></p>
+			                    <p style="margin-top: 3.5em;"><span>Venue:</span> <input type = 'text' id="EventVenue" name='EventVenue' /></p>
+			                    <p><span>Date:</span> <input type = 'text' id="EventDateTime" name='EventDateTime' /></p>
+                                <input id="EventClubId" name="EventClubId" value="@Event.EventRequestClubId" hidden />
+                                <input id="EventCreatedBy" name="EventCreatedBy" value="@Model.BaseUser.UserId" hidden/>
+                                <input id="EventEventRequestId" name="EventEventRequestId" value="@Event.EventRequestId" hidden />
+			                    <p><span>&nbsp</span>
+                                    <input class = 'submit' type = 'submit' value = 'Submit'>
+				                    <input class = 'submit' type = 'reset' value = 'Clear'>
+			                    </p>
+		                    </div>
+	                    </form>
+                    </div> 
+                }
+            }
+		</div>
+
+	    <div class="all-data-div" id="tab-2">
+            @{
+                 var j = 1;    
+             }
+            @if(@Model.Events.Count() > 0 ) {			  
+                <table>
+				    <tr>
+                        <th>S.No</th>
+					    <th>Event</th>
+					    <th>Club</th>
+					    <th>Likes</th>
+					    <th>Dislikes</th>
+					    <th></th>
+				    </tr>
+
+                    
+				    @foreach (var Event in @Model.Events)
+                    {
+                         <tr>
+                            <td>@j</td>
+					        <td>@Event.EventName</td>
+					        <td>@Event.Club.ClubName</td>
+					        <td>@Model.EventLikeDislikes.Count(e => e.EventLikeDislikeEventId == Event.EventId && e.EventLikeDislikeValue == 1)</td>
+					        <td>@Model.EventLikeDislikes.Count(e => e.EventLikeDislikeEventId == Event.EventId && e.EventLikeDislikeValue == 0)</td>
+					        <td>
+                                @{
+                                    j++;
+                                }
+						        <input type="button" onclick="location.href='./Event/Details/@Event.EventId.ToString()'" value="Edit"/>
+						        <input type="button" onclick="location.href='./Event/Details/@Event.EventId.ToString()'" value="Details"/>
+					        </td>
+				        </tr>
+                    }
+			    </table>
+            }
+		</div>
+
+        <div class="all-data-div" id="tab-3">
+			    
+            @if(@Model.Clubs.Count() > 0) {
+                <table>
+				    <tr>
+					    <th>S.No</th>
+					    <th>Club</th>
+					    <th>Moderator</th>
+                        <th>Total Subscribers</th>
+					    <th>Total Events</th>
+					    <th></th>
+				    </tr>
+                    @{
+                        j = 1;
+                     }
+				    @foreach (var Club in @Model.Clubs)
+                    {   
+                        <tr>
+					        <td>@j</td>
+					        <td>@Club.ClubName</td>
+					        <td></td>
+                            <td>@Club.ClubSubscribe.Count()</td>
+					        <td>@Club.Events.Count()</td>
+					        <td>
+						        <input type="button" value="Edit"/>
+					        </td>
+				        </tr>
+                        {
+                            j++;
+                        }
+                    }
+			    </table>
+            }
+		</div> 
+        <div class="all-data-div" id="tab-4" >
+			<form class="form-settings" action="/NCRSocialNetwork/Event/Create" method="post" >
+	            <div class="form_settings">
+			        <p><span>Event Title:</span> <input type = 'text' id="NewEventName" name='EventName' /></p>
+			        <p><span>Description:</span> <textarea id="NewEventDescription" name="EventDescription"></textarea></p>
+			        <p style="margin-top: 3.5em;"><span>Venue:</span> <input type = 'text' id="NewEventVenue" name='EventVenue' /></p>
+			        <p><span>Date:</span> <input type = 'text' id="NewEventDateTime" name='EventDateTime' /></p>                    
+		            <p><span>Club: </span><select id = "NewClubId" name = "EventClubId" >
+                            @foreach (var Club in @Model.Clubs)
+                            {
+                                <option value="@Club.ClubId">@Club.ClubName</option>
+                            }
+		                </select>
+		            </p>
+                    <input id="NewEventCreatedBy" name="EventCreatedBy" value="@Model.BaseUser.UserId" hidden/>
+			        <p><span>&nbsp</span>
+                        <input class = 'submit' type = 'submit' value = 'Submit'>
+			            <input class = 'submit' type = 'reset' value = 'Clear'>
+			        </p>
+		        </div>
+	        </form>
+		</div>         
+        <div class="all-data-div" id="tab-5" >
+			<form class="form-settings" action="/NCRSocialNetwork/Moderator/Create" method="post" >
+	            <div class="form_settings">
+			        <p><span>Club: </span><select id = "ClubModeratorClubID" name = "ClubModeratorClubID" >
+                            @foreach (var Club in @Model.Clubs)
+                            {
+                                <option value="@Club.ClubId" onclick="admin_club(@Club.ClubId)">@Club.ClubName</option>
+                            }
+		                </select>
+		            </p>
+                    <p><span>Moderator Name:</span>
+                        <input type="text" id="ClubModeratorUserId" name="ModeratorUserId"/>
+                    </p>
+			        <p><span>&nbsp</span>
+                        <input class = 'submit' type = 'submit' value = 'Submit'>
+			            <input class = 'submit' type = 'reset' value = 'Clear'>
+			        </p>
+		        </div>
+	        </form>
+		</div>         
+        <div class="all-data-div" id="tab-6" >
+			<form class="form-settings" action="/NCRSocialNetwork/Club/Create" method="post" enctype="multipart/form-data">
+	            <div class="form_settings">
+			        <p><span>Club Name:</span> <input type = 'text' id="ClubName" name='ClubName' /></p>
+			        <p><span>Description:</span> <textarea id="ClubDescription" name="ClubDescription"></textarea></p>
+			        <p style="margin-top: 3.5em;"><span>Club Thumbnail:</span><input type = 'file' id="ClubThumbnailPath" name='ClubThumbnailPath'style="float:right;" /></p>
+			        <p><span>Club Image:</span> <input type = 'file' id="ClubImagePath" name='ClubImagePath' style="float:right;"/></p>
+			        <p><span>&nbsp</span>
+                        <input class = 'submit' type = 'submit' value = 'Submit'>
+				        <input class = 'submit' type = 'reset' value = 'Clear'>
+			        </p>
+		        </div>
+	        </form>
+		</div> 
+    </div>
+    <br />
+</section>
+<!--Sidebar: Userinfo and Login Information-->
+@section Aside{
+	<input type="text" placeholder="Event Name" />
+	<h3>Statistics</h3>
+	<article class="profile_data">
+         <p><b>Total Clubs:</b> @Model.Clubs.Count()</p>
+		 <p><b>Total Events:</b> @Model.Events.Count()</p>
+		 <p><b>Total Users:</b> @Model.Users.Count()</p>
+         <p><b>Total Event Requests:</b> @Model.EventRequests.Count()</p>
+	</article>
+    
+    <h3>Clubs</h3>
+	<article class="article_data">
+         @foreach (var Club in @Model.Clubs)
+         {
+		    @Html.ActionLink(@Club.ClubName, @Club.ClubId.ToString(), "Clubs")
+         }
+	</article>	
+    
+    <h3>Moderators</h3>		
+    <article class="article_data">
+
+    </article>			
+}

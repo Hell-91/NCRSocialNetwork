@@ -1,0 +1,181 @@
+﻿@model NCRSocialNetwork.ViewModels.EventViewModel
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int eventStatus = @Model.UserEventAttendingStatus;
+}
+
+<div class="profile-section-main">
+	<h3><b>Event Details</b>
+        <p style="float: right;">
+            <select class="event-attending">
+                <option value="-">-</option>
+                @if (eventStatus == 1)
+                {
+                    <option value="1" selected>Attending</option>
+                    <option value="0">Not Attending</option>
+                    <option value="-1">Maybe</option>
+                }
+                else if(eventStatus == 0)
+                {
+                    <option value="1">Attending</option>
+                    <option value="0" selected>Not Attending</option>
+                    <option value="-1">Maybe</option>
+                }
+                else if (eventStatus == -1)
+                { 
+                    <option value="1">Attending</option>
+                    <option value="0">Not Attending</option>
+                    <option value="-1" selected>Maybe</option>
+                }                
+            </select>
+        </p>
+	</h3>
+    <input id="baseuserId" value="@Model.BaseUser.UserId" hidden />
+    <input id="eventId" value="@Model.Event.EventId" hidden />
+	@if (@Model.Event.Club.ClubThumbnailPath != null)
+    {
+        <img src='@Url.Content(Model.Event.Club.ClubThumbnailPath)' alt="" width = "60%">	
+    }
+    else
+    {
+        <img src='/Content/Images/Sports-Logo.png' alt="" width = "60%">	
+    }
+    <div id="profile-data-main">
+        <p><b>Event: </b> @Model.Event.EventName</p>
+	    <p><b>Description:</b>  @Model.Event.EventDescription</p>
+	    <p><b>Club:</b> @Model.Event.Club.ClubName</p>
+	    <p><b>Date:</b>  @Model.Event.EventCreatedTime.ToString("ddd d MMM")</p>
+        <p><b>Time:</b> @Model.Event.EventCreatedTime.ToString("HH:mm") Hrs </p>
+	    <p><b>Venue:</b>  @Model.Event.EventVenue</p>
+        <br />
+	</div>
+</div>
+
+<br />
+<ul class="tabs">
+    <li><a href="#comments-section">Comments</a></li>
+    <li><a href="#photos-section">Photos</a></li>
+    <li><a href="#videos-section">Videos</a></li>
+    @if(@Model.Event.Club.ClubModerators.Where(m => m.ClubModeratorUserId == @Model.BaseUser.UserId).Count() > 0)
+    {
+        <li><a href="#edit-event-section">Edit Event</a></li>
+    }
+</ul>
+
+<div id="articles-section" class="articles-section">	
+    <br />
+    <div id="comments-section" class="articles-section ">
+        @if(@Model.Comments.Count() > 0) {			
+	            foreach (var Comment in @Model.Comments)
+                {
+                    <article id="@Comment.CommentId" class="event">
+		                    <div id="event-image" class="event-image">
+			                    @if(@Comment.User.UserDisplayPicture != null) 
+                                {
+                                    <img src="@Url.Content(@Comment.User.UserDisplayPicture)" alt="" width="60em" />
+                                }
+                                else 
+                                {
+		                            <img src='@Url.Content("/Content/Images/profile-picture_07.png")' alt="" width = "65%">	
+                                }
+		                    </div>
+		                    <div id="event-data" class="event-data">
+			                    <div class="event-content">
+				                    <p id="event_id_content">@Comment.CommentDescription</p>
+			                    </div>                                
+                                <div class="event-operations">				                   
+				                   <p id="event_id_date_posted">Posted on @Comment.CommentCreatedDate.ToString("ddd d MMM") at @Comment.CommentCreatedDate.ToString("HH:mm")</p>							
+			                    </div>
+		                    </div>
+	                    </article>	
+                }
+            }
+    </div>
+    <div id="photos-section" class="articles-section">
+        <h2>Photos Section</h2>
+    </div>
+    <div id="videos-section" class="articles-section">
+        <h2>Videos Section</h2>
+    </div>
+    @if(@Model.Event.Club.ClubModerators.Where(m => m.ClubModeratorUserId == @Model.BaseUser.UserId).Count() > 0)
+    {
+         <div id="edit-event-section" class="articles-section">
+            <form action="~/Event/Edit/@Model.Event.EventId" method="post">
+                <div class="form_settings">
+		            <p><span>Event Name:</span> <input type = 'text' id="EventName" name='EventName' value="@Model.Event.EventName"/></p>
+		            <p><span>Description:</span> <textarea id="EventDescription" name="EventDescription">@Model.Event.EventDescription</textarea></p>
+		            <p style="margin-top: 3.5em;"><span>Event Date & Time:</span><input type = 'text' id="EventDateTime" name='EventDateTime' value="@Model.Event.EventDateTime"/></p>
+		            <p><span>Event Venue:</span><input type = 'text' id="EventVenue" name='EventVenue' value="@Model.Event.EventVenue"/></p>
+                    <input id="EventId" name="EventId" value="@Model.Event.EventId" hidden />
+                    <input id="EventClubId" name="EventClubId" value="@Model.Event.EventClubId" hidden />
+                    <input id="EventCreatedBy" name="EventCreatedBy" value="@Model.Event.EventCreatedBy" hidden />
+                    <input id="EventCreatedTime" name="EventCreatedTime" value="@Model.Event.EventCreatedTime" hidden />
+		            <p><span>&nbsp</span>
+                        <input class = 'submit' type = 'submit' value = 'Update'>
+		                <input class = 'submit' type = 'reset' value = 'Clear'>
+		            </p>
+		        </div>
+            </form>
+        </div>
+    }
+    <br />
+</div>
+
+@section Aside {
+    <h3 style="margin-top: 1em;">Attending</h3>
+	<article class="article_data user-list">
+        @if(@Model.EventAttending.Count() > 0)
+        {
+            if(@Model.UserEventAttendingStatus == 1)
+            {
+                <a href="/NCRSocialNetwork/UserProfile/@Model.BaseUser.UserId"><img src="@Url.Content(@Model.BaseUser.UserDisplayPicture)" alt="" style="padding-right: 0.5em;"/><p>@Model.BaseUser.UserFirstName @Model.BaseUser.UserLastName</p></a>        
+            }
+            foreach(var e in @Model.EventAttending)
+            {
+                if(@Model.BaseUser.UserId != e.EventAttendingUserId && e.EventAttendingValue == 1)
+                {
+                    <a href="/NCRSocialNetwork/UserProfile/@e.User.UserId"><img src="@Url.Content(@e.User.UserDisplayPicture)" alt="" style="padding-right: 0.5em;"/><p>@e.User.UserFirstName @e.User.UserLastName</p></a>        
+                }       
+            }
+        }
+	</article>
+	
+	<h3 style="margin-top: 4em;">Maybe</h3>
+	<article class="article_data user-list">
+        @if(@Model.EventAttending.Count() > 0)
+        {
+            if(@Model.UserEventAttendingStatus == -1)
+            {
+                <a href="/NCRSocialNetwork/UserProfile/@Model.BaseUser.UserId"><img src="@Url.Content(Model.BaseUser.UserDisplayPicture)" alt="" style="padding-right: 0.5em;"/><p>@Model.BaseUser.UserFirstName @Model.BaseUser.UserLastName</p></a>        
+            }
+            foreach(var e in @Model.EventAttending)
+            {
+                if (@Model.BaseUser.UserId != e.EventAttendingUserId && e.EventAttendingValue == -1)
+                {
+                    <a href="/NCRSocialNetwork/UserProfile/@e.User.UserId"><img src="@Url.Content(e.User.UserDisplayPicture)" alt="" style="padding-right: 0.5em;"/><p>@e.User.UserFirstName @e.User.UserLastName</p></a>        
+                }       
+            }
+        }
+	</article>
+
+    <h3 style="margin-top: 4em;">Not Attending</h3>
+	<article class="article_data user-list">
+        @if(@Model.EventAttending.Count() > 0)
+        {
+            if(@Model.UserEventAttendingStatus == 0)
+            {
+                <a href="/NCRSocialNetwork/UserProfile/@Model.BaseUser.UserId"><img src="@Url.Content(Model.BaseUser.UserDisplayPicture)" alt="" style="padding-right: 0.5em;"/><p>@Model.BaseUser.UserFirstName @Model.BaseUser.UserLastName</p></a>        
+            }
+            foreach(var e in @Model.EventAttending)
+            {
+                if (@Model.BaseUser.UserId != e.EventAttendingUserId && e.EventAttendingValue == 0)
+                {
+                    <a href="/NCRSocialNetwork/UserProfile/@e.User.UserId"><img src="@Url.Content(e.User.UserDisplayPicture)" alt="" style="padding-right: 0.5em;"/><p>@e.User.UserFirstName @e.User.UserLastName</p></a>        
+                }       
+            }
+        }
+	</article>
+}	
+

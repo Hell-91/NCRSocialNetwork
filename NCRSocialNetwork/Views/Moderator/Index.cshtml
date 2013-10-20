@@ -1,0 +1,39 @@
+﻿@model IEnumerable<NCRSocialNetwork.Models.ClubModerator>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Club.ClubName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.UserFirstName)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Club.ClubName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.UserFirstName)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ClubModeratorId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ClubModeratorId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ClubModeratorId })
+        </td>
+    </tr>
+}
+
+</table>
