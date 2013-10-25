@@ -108,9 +108,12 @@ namespace NCRSocialNetwork.Controllers
                 db.SaveChanges();
 
                 EventRequest eventrequest = db.EventRequests.Find(Event.EventEventRequestId);
-                eventrequest.EventRequestFlag = "true";
-                db.Entry(eventrequest).State = EntityState.Modified;
-                db.SaveChanges();
+                if (eventrequest != null)
+                {
+                    eventrequest.EventRequestFlag = "true";
+                    db.Entry(eventrequest).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
 
                 return RedirectToAction("Index", page);
             }
@@ -210,8 +213,7 @@ namespace NCRSocialNetwork.Controllers
                 {
                     db.EventAttendings.Add(eventattending);
                     db.SaveChanges();
-                    return RedirectToAction("Index", "Home");
-                
+                    return RedirectToAction("Index", "Home");                
                 }
             }
 

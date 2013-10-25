@@ -38,7 +38,7 @@ public partial class Event
 
     public string EventVenue { get; set; }
 
-    public string EventDateTime { get; set; }
+    public System.DateTime EventDateTime { get; set; }
 
     public Nullable<int> EventEventRequestId { get; set; }
 

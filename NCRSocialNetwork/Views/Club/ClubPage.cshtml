@@ -5,18 +5,32 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@switch (Model.Club.ClubName)
+{
+    case "Sports": <img src="\NCRSocialNetwork\Content\Images\sports.png" id="one" alt="">
+<br />
+        break;
+
+    case "Music": <img src="\NCRSocialNetwork\Content\Images\music.png" id="two" alt="">
+<br />
+        break;
+
+}
+
 @{
-    if (Model.ClubSubscribed || Model.BaseUser.UserRole == "Admin" || Model.ClubModerators.Where( m => m.ClubModeratorUserId == Model.BaseUser.UserId).Count() > 0)
+    if (Model.ClubSubscribed || Model.BaseUser.UserRole == "Admin" || Model.ClubModerators.Where(m => m.ClubModeratorUserId == Model.BaseUser.UserId).Count() > 0)
     {	
+        
+        <br />
         <ul class="tabs">
 	        <li><a href="#articles-section">Recent Events</a></li>
 	        <li><a href="#photos-section">Photos</a></li>
 	        <li><a href="#videos-section">Videos</a></li>
             <li><a href="#request-event-section">Requst New Event</a></li>
-	        @if(Model.Club.ClubModerators.Where(m => m.ClubModeratorUserId == @Model.BaseUser.UserId).Count() > 0 || @Model.BaseUser.UserRole == "Admin")
-            {
+	        @if (Model.Club.ClubModerators.Where(m => m.ClubModeratorUserId == @Model.BaseUser.UserId).Count() > 0 || @Model.BaseUser.UserRole == "Admin")
+         {
                 <li><a href="#new-event-section">New Event</a></li>
-            }
+         }
             @if (Model.BaseUser.UserRole == "Admin")
             {
                 <li><a href="#edit-club-section">Edit Club</a></li>
@@ -165,10 +179,10 @@
                                                 new { @id = "event_" + Event.EventId + "_unlike" }
                                             )
                        
-                                    }                
-				                    <p id="event_id_comment"><a href="#" onclick="showcomments(@Event.EventId)">Comment</a></p>
-				                    <p>@Html.ActionLink("Go to this event page", @Event.EventId.ToString(), "Event/Details")</p>
-				                    <p id="event_id_date_posted">Posted on @Event.EventCreatedTime.ToString("ddd d MMM")</p>							
+                        }                                 
+				                    <p onclick="showcomments(@Event.EventId)" class="p_hover">Comment</p>
+				                    @Html.ActionLink("Go to this event page", @Event.EventId.ToString(), "Event/Details")
+				                    <p id="event_id_date_posted">Posted on @Event.EventCreatedTime.ToString("ddd d MMM") at @Event.EventCreatedTime.ToString("HH:mm")</p>								
 			                    </div>
                  
                                <p id="like-dislike-@Event.EventId" class="like-dislike" hidden>                     
@@ -184,13 +198,15 @@
                                                 if (Comment.CommentKeyId == @Event.EventId)
                                                 {
                                                     <div class="event-comment">
-					                                    <a href="/UserProfile/@Comment.User.UserId"><img src="@Url.Content(@Comment.User.UserDisplayPicture)" alt="" width="45em" /></a>
-					                                    <p>@Html.ActionLink(@Comment.User.UserFirstName + ":  ", "/UserProfile/" + @Comment.User.UserId, ".")@Comment.CommentDescription</p>
+					                                    <a href="/NCRSocialNetwork/UserProfile/@Comment.User.UserId"><img src="@Url.Content(@Comment.User.UserDisplayPicture)" alt="" width="45em" /></a>
+					                                    <p>@Html.ActionLink(@Comment.User.UserFirstName + " " + @Comment.User.UserLastName + ":  ", "/UserProfile/" + @Comment.User.UserId, ".")@Comment.CommentDescription</p>
 				                                    </div>
                                                 }
                                             }
+                                        
                                         </div>
                                     }
+                                    <div id="newcomment-@Event.EventId" style="display:inline; width: 0; height: 0;"></div>				    
 				                    <div class="event-user-comment">	
 					                    <img src="@Url.Content(@Model.BaseUser.UserDisplayPicture)" alt="" width="45em" />
 					                    <div>
@@ -207,13 +223,13 @@
                                                 {
                                                     HttpMethod = "POST",
                                                     InsertionMode = InsertionMode.InsertAfter,
-                                                    UpdateTargetId = "event-comments-" + Event.EventId,
+                                                    UpdateTargetId = "newcomment-" + Event.EventId,
                                                     OnSuccess = "myonsuccess"
                                                 }))
-                                                { 
+                          { 
                                                     <textarea name="UserComment" class="UserComment" placeholder="Your comment here"></textarea>
 						                            <input type="submit" value="Comment">
-                                                }
+                          }
 					                    </div>
 				                    </div>
 			                    </div>
@@ -264,7 +280,7 @@
 	                </form>
                 </div>
             }
-    
+
             if (Model.Club.ClubModerators.Where(m => m.ClubModeratorUserId == @Model.BaseUser.UserId).Count() > 0 || @Model.BaseUser.UserRole == "Admin")
             {
             <div id="new-event-section" class="articles-section">
@@ -285,11 +301,13 @@
 	            </form>
             </div>
             }
-        }
-        else
-        {
+    }
+    else
+    {
+        
+<br />
             <h3 style="text-align: center;">Subscribe to view this club.</h3>
-        }
+    }
     }
 
 @section Aside {
@@ -311,7 +329,7 @@
                 {
                     if (user.User.UserFirstName != null)
                     {    
-                                @user.User.UserFirstName
+                                @user.User.UserFirstName @Html.Raw(" ")
                     }
                     if (user.User.UserLastName != null)
                     {
@@ -385,10 +403,10 @@
 	    <article class="article_data">
             @if (Model.Events != null)
             {
-                foreach (var clubEvent in @Model.Events)
-                {
-		            <a href="new_event.html">@clubEvent.EventName</a>
-                }
+                 foreach (var Event in @Model.Events)
+                 {
+                    @Html.ActionLink(@Event.EventName, @Event.EventId.ToString(), "Event/Details")
+                 }
             }
 	    </article>
 		

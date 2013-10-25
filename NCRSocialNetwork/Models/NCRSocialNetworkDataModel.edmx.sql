@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 10/20/2013 23:37:02
--- Generated from EDMX file: C:\Users\Hell\Downloads\NCRSocialNetwork\NCRSocialNetwork\NCRSocialNetwork\Models\NCRSocialNetworkDataModel.edmx
+-- Date Created: 10/23/2013 18:27:38
+-- Generated from EDMX file: C:\NCRSocialNetwork\NCRSocialNetwork\Models\NCRSocialNetworkDataModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -68,6 +68,9 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_EventEventRequest]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Events] DROP CONSTRAINT [FK_EventEventRequest];
 GO
+IF OBJECT_ID(N'[dbo].[FK_UserFeedback]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Feedbacks] DROP CONSTRAINT [FK_UserFeedback];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -102,6 +105,9 @@ IF OBJECT_ID(N'[dbo].[EventAttendings]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[ClubModerators]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ClubModerators];
+GO
+IF OBJECT_ID(N'[dbo].[Feedbacks]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Feedbacks];
 GO
 
 -- --------------------------------------------------
@@ -140,7 +146,7 @@ CREATE TABLE [dbo].[Events] (
     [EventDescription] nvarchar(max)  NOT NULL,
     [EventClubId] int  NOT NULL,
     [EventVenue] nvarchar(max)  NULL,
-    [EventDateTime] nvarchar(max)  NULL,
+    [EventDateTime] datetime  NULL,
     [EventEventRequestId] int  NULL,
     [EventCreatedBy] int  NOT NULL,
     [EventCreatedTime] datetime  NOT NULL
@@ -211,6 +217,15 @@ CREATE TABLE [dbo].[ClubModerators] (
 );
 GO
 
+-- Creating table 'Feedbacks'
+CREATE TABLE [dbo].[Feedbacks] (
+    [FeedbackId] int IDENTITY(1,1) NOT NULL,
+    [FeedbackUserId] int  NOT NULL,
+    [FeedbackDescription] nvarchar(max)  NOT NULL,
+    [FeedbackCreatedDate] nvarchar(max)  NOT NULL
+);
+GO
+
 -- --------------------------------------------------
 -- Creating all PRIMARY KEY constraints
 -- --------------------------------------------------
@@ -273,6 +288,12 @@ GO
 ALTER TABLE [dbo].[ClubModerators]
 ADD CONSTRAINT [PK_ClubModerators]
     PRIMARY KEY CLUSTERED ([ClubModeratorId] ASC);
+GO
+
+-- Creating primary key on [FeedbackId] in table 'Feedbacks'
+ALTER TABLE [dbo].[Feedbacks]
+ADD CONSTRAINT [PK_Feedbacks]
+    PRIMARY KEY CLUSTERED ([FeedbackId] ASC);
 GO
 
 -- --------------------------------------------------
@@ -505,6 +526,20 @@ ADD CONSTRAINT [FK_EventEventRequest]
 CREATE INDEX [IX_FK_EventEventRequest]
 ON [dbo].[Events]
     ([EventEventRequestId]);
+GO
+
+-- Creating foreign key on [FeedbackUserId] in table 'Feedbacks'
+ALTER TABLE [dbo].[Feedbacks]
+ADD CONSTRAINT [FK_UserFeedback]
+    FOREIGN KEY ([FeedbackUserId])
+    REFERENCES [dbo].[Users]
+        ([UserId])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_UserFeedback'
+CREATE INDEX [IX_FK_UserFeedback]
+ON [dbo].[Feedbacks]
+    ([FeedbackUserId]);
 GO
 
 -- --------------------------------------------------

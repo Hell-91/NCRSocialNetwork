@@ -15,7 +15,10 @@ namespace NCRSocialNetwork
                         "~/Scripts/jquery.validate*",
                         "~/Scripts/jquery.flexslider-min.js",
                         "~/Scripts/jquery.signalR-2.0.0.min.js",
-                        "~/signalr/hubs"));
+                        "~/signalr/hubs",
+                        "~/Scripts/clndr-1.0.13.min.js",
+                        "~/Scripts/moment.js",
+                        "~/Scripts/underscore.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));

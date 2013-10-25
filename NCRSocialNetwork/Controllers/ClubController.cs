@@ -40,8 +40,9 @@ namespace NCRSocialNetwork.Controllers
         //
         // GET: /Club/5
 
-        public ActionResult ClubPage(int clubId = 0)
+        public ActionResult ClubPage(string clubName)
         {
+            var clubId = db.Clubs.Where(c => c.ClubName == clubName).First().ClubId;
             var name = User.Identity.Name.Split('\\')[1];
             bool clubSubscribedFlag = false;
             if (db.ClubSubscribes.Where(c => c.ClubSubscribeClubId == clubId && c.User.UserQuicklookId == name).Count() > 0) {
@@ -172,7 +173,9 @@ namespace NCRSocialNetwork.Controllers
                 db.Comments.Add(eventcomment);
                 db.SaveChanges();
             }
+            ViewBag.UserId = UserId;
             ViewBag.Comment = UserName + ": " + UserComment;
+            ViewBag.Imagelink = db.Users.Where(u => u.UserId == UserId).First().UserDisplayPicture;
             return PartialView("_EventCommentView");
         }
 
@@ -257,6 +260,14 @@ namespace NCRSocialNetwork.Controllers
         [HttpPost]
         public ActionResult Edit(Club club)
         {
+            string page = "Admin";
+
+            string requestedPage = HttpContext.Request.UrlReferrer.ToString();
+            if (requestedPage.Contains("Clubs"))
+            {
+                page = "Clubs/" + club.ClubName;
+            }
+
             foreach (string file in Request.Files)
             {
                 HttpPostedFileBase hpf = Request.Files[file];
@@ -293,7 +304,7 @@ namespace NCRSocialNetwork.Controllers
             {
                 db.Entry(club).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction(club.ClubId.ToString(), "Clubs");
+                return RedirectToAction(page, "/");
             }
            // ViewBag.ClubModerator = new SelectList(db.Users, "UserId", "UserFirstName", club.ClubModerator);
             ViewBag.ClubId = new SelectList(db.Keys, "KeyId", "KeyType", club.ClubId);

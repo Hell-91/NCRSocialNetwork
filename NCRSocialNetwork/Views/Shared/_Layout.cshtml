@@ -21,13 +21,14 @@
 			<ul>
                 @foreach (var Club in @Model.BaseClub)
                 {
-                    <li>@Html.ActionLink((string)@Club.ClubName, (string)@Club.ClubId.ToString(), "Clubs", null, new {@class = "menu-item", @id = ++i })</li>
+                    <li>@Html.ActionLink((string)@Club.ClubName, (string)@Club.ClubName, "Clubs", null, new {@class = "menu-item", @id = ++i })</li>
                 }
                 <li>@Html.ActionLink("Profile", (string)@Model.BaseUser.UserId.ToString(), "UserProfile", null, new { @class = "menu-item", @id = "P" })</li>
                 @if(@Model.BaseUser.UserRole == "Admin" || @Model.BaseUser.UserRole == "Moderator")
                 {
                     <li>@Html.ActionLink("Admin", "", "Admin", null, new { @class = "menu-item", @id = "A" })</li>
                 }	
+                <li>@Html.ActionLink("Feedback", "PostFeedback", "Feedback", null, new { @class = "menu-item", @id = "F" })</li>
 			</ul>				
 		</nav>
         <input value ="@i" id="total_clubs" hidden />
@@ -36,7 +37,7 @@
 			<!--Main Section: Actual website data goes in this section-->
 			<section id="main_section">
 				<br>				
-				@RenderBody()                	
+				@RenderBody()   
 			</section>
 
             <!--Sidebar: Userinfo and Login Information-->
@@ -56,6 +57,29 @@
         $(document).ready(function () {
         });
         
+        // this will use clndr's default template, which you probably don't want.
+        $('#calendar').clndr();
+
+
+        // there are a lot of options. the rabbit hole is deep.
+        $('#calendar').clndr({
+            events: [
+              { date: '2013-09-09', title: 'CLNDR GitHub Page Finished', url: 'http://github.com/kylestetz/CLNDR' }
+            ],
+            clickEvents: {
+                click: function (target) {
+                    console.log(target);
+                },
+                onMonthChange: function (month) {
+                    console.log('you just went to ' + month.format('MMMM, YYYY'));
+                }
+            },
+            doneRendering: function () {
+                console.log('this would be a fine place to attach custom event handlers.');
+            }
+        });
+
+
         $('.hidden').hide();
 
         function myonsuccess() {
@@ -116,6 +140,13 @@
                $("#F_" + i).hide();
             }
             $("#F_" + id).show();
+        }
+
+        function showEditClub(id) {
+            for (var i = 1; i < $('#totalClubs').val() ; i++) {
+                $("#C_" + i).hide();
+            }
+            $("#C_" + id).show();
         }
 
         $('.event-attending').change(function () {

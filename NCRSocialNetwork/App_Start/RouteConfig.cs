@@ -27,8 +27,8 @@ namespace NCRSocialNetwork
 
             routes.MapRoute(
                 name: "Clubs",
-                url: "Clubs/{clubId}/{userId}",
-                defaults: new { controller = "Club", action = "ClubPage", clubId = UrlParameter.Optional, userId = UrlParameter.Optional }
+                url: "Clubs/{clubName}",
+                defaults: new { controller = "Club", action = "ClubPage", clubName = UrlParameter.Optional }
             );
 
             routes.MapRoute(

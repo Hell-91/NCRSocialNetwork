@@ -8,12 +8,29 @@
 <div id="image-slider-window">
 	<img src="Content\Images\sports.png" alt="" style="max-width:100%">
 	<figure id="imagestrip">
-		<img src="\NCRSocialNetwork\Content\Images\sports.png" alt="">
-		<img src="\NCRSocialNetwork\Content\Images\music.png" alt="">
-		<img src="\NCRSocialNetwork\Content\Images\dance.png" alt="">
-		<img src="\NCRSocialNetwork\Content\Images\music.png" alt="">
-		<img src="\NCRSocialNetwork\Content\Images\sports.png" alt="">
+		<img src="\NCRSocialNetwork\Content\Images\sports.png" id="one" alt="">
+		<img src="\NCRSocialNetwork\Content\Images\music.png" id="two" alt="">
+		<img src="\NCRSocialNetwork\Content\Images\dance.png" id="three" alt="">
+		<img src="\NCRSocialNetwork\Content\Images\music.png" id="four" alt="">
+		<img src="\NCRSocialNetwork\Content\Images\sports.png" id="five" alt="">
 	</figure>
+    <ul>
+		<li>
+			<a href="#one">1</a>
+		</li>
+		<li>
+			<a href="#two">2</a>
+		</li>
+		<li>
+			<a href="#three">3</a>
+		</li>
+		<li>
+			<a href="#four">4</a>
+		</li>
+		<li>
+			<a href="#five">5</a>
+		</li>
+	</ul>
 </div>
 <br>
 
@@ -157,7 +174,7 @@
                             )
                        
                     }                    
-				    <a href="#" onclick="showcomments(@Event.EventId)">Comment</a>
+				    <p onclick="showcomments(@Event.EventId)" class="p_hover">Comment</p>
 				    @Html.ActionLink("Go to this event page", @Event.EventId.ToString(), "Event/Details")
 				    <p id="event_id_date_posted">Posted on @Event.EventCreatedTime.ToString("ddd d MMM") at @Event.EventCreatedTime.ToString("HH:mm")</p>							
 			    </div>
@@ -174,13 +191,14 @@
                                 if (Comment.CommentKeyId == @Event.EventId)
                                 {
                                     <div class="event-comment">
-					                    <a href="/UserProfile/@Comment.User.UserId"><img src="@Url.Content(@Comment.User.UserDisplayPicture)" alt="" width="45em" /></a>
-					                    <p>@Html.ActionLink(@Comment.User.UserFirstName + ":  ", "/UserProfile/" + @Comment.User.UserId, ".")@Comment.CommentDescription</p>
+					                    <a href="/NCRSocialNetwork/UserProfile/@Comment.User.UserId"><img src="@Url.Content(@Comment.User.UserDisplayPicture)" alt="" width="45em" /></a>
+					                    <p>@Html.ActionLink(@Comment.User.UserFirstName + " " + @Comment.User.UserLastName + ":  ", "/UserProfile/" + @Comment.User.UserId, ".")@Comment.CommentDescription</p>
 				                    </div>
                                 }
                             }
                         </div>
                     }
+                    <div id="newcomment-@Event.EventId" style="display:inline; width: 0; height: 0;"></div>
 				    <div class="event-user-comment">	
 					    <img src="@Url.Content(@Model.BaseUser.UserDisplayPicture)" alt="" width="45em" />
 					    <div>
@@ -190,13 +208,13 @@
                                 {
                                     UserId = @Model.BaseUser.UserId,
                                     EventId = Event.EventId,
-                                    UserName = "Murali"
+                                    UserName = @Model.BaseUser.UserFirstName + @Model.BaseUser.UserLastName
                                 },
                                 new AjaxOptions
                                 {
                                     HttpMethod = "POST",
                                     InsertionMode = InsertionMode.InsertAfter,
-                                    UpdateTargetId = "event-comments-" + Event.EventId,
+                                    UpdateTargetId = "newcomment-" + Event.EventId,
                                     OnSuccess = "myonsuccess"
                                 }))
                                 { 
@@ -213,8 +231,8 @@
 <div id="new-event-section" class="articles-section">
     <form class="form-settings" action="~/RequestEvent/NewEvent" method="post">
 	    <div class="form_settings">
-			<p><span>Event Title:</span> <input type = 'text' id="EventRequestEventTitle" name='EventRequestEventTitle' /></p>
-			<p><span>Description:</span> <textarea id="EventRequestEventDescription" name="EventRequestEventDescription"></textarea></p>
+			<p><span>Event Title:</span> <input type = 'text' id="EventRequestEventTitle" name='EventRequestEventTitle' required/></p>
+			<p><span>Description:</span> <textarea id="EventRequestEventDescription" name="EventRequestEventDescription" required></textarea></p>
             <p style="margin-top: 3.4em;"><span>Club: </span>
 		    <select id = "EventRequestClubId" name = "EventRequestClubId" >
                 @foreach (var Club in @Model.Clubs)
@@ -254,7 +272,7 @@
 		<article class="article_data">
             @foreach (var Club in @Model.Clubs)
             {
-                @Html.ActionLink(@Club.ClubName, @Club.ClubId.ToString(), "Clubs")
+                @Html.ActionLink(@Club.ClubName, @Club.ClubName, "Clubs")
             }
 		</article>
 		<h3>Events</h3>
@@ -264,6 +282,32 @@
                 @Html.ActionLink(@Event.EventName, @Event.EventId.ToString(), "Event/Details")
             }
 		</article>
+@*		<h3>Event Calendar</h3>
+		<div id="calendar" class="clearfix"> 
+				<script type="text/template" id="full-clndr-template">
+				<div class="clndr-<a href="http://www.jqueryscript.net/tags.php?/grid/">grid</a>">
+				<div class="days-of-the-week clearfix">
+				<% _.each(daysOfTheWeek, function(day) { %>
+				<div class="header-day"><%= day %></div>
+				<% }); %>
+				</div>
+				<div class="days clearfix">
+				<% _.each(days, function(day) { %>
+				<div class="<%= day.classes %>" id="<%= day.id %>"><span class="day-number"><%= day.day %></span></div>
+				<% }); %>
+				</div>
+				</div>
+				<div class="event-listing">
+				<div class="event-listing-title">EVENTS THIS MONTH</div>
+				<% _.each(eventsThisMonth, function(event) { %>
+				<div class="event-item">
+				<div class="event-item-name"><%= event.title %></div>
+				<div class="event-item-location"><%= event.location %></div>
+				</div>
+				<% }); %>
+				</div>
+				</script> 
+				</div> *@
 	</section>
 }
 

@@ -16,6 +16,7 @@
     <EntitySet Name="EventRequests" EntityType="NCRSocialNetworkDataModel.Store.EventRequests" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="EventAttendings" EntityType="NCRSocialNetworkDataModel.Store.EventAttendings" store:Type="Tables" Schema="dbo" />
     <EntitySet Name="ClubModerators" EntityType="NCRSocialNetworkDataModel.Store.ClubModerators" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Feedbacks" EntityType="NCRSocialNetworkDataModel.Store.Feedbacks" store:Type="Tables" Schema="dbo" />
     <AssociationSet Name="UserEventCreated" Association="NCRSocialNetworkDataModel.Store.UserEventCreated">
       <End Role="User" EntitySet="Users" />
       <End Role="Event" EntitySet="Events" />
@@ -84,6 +85,10 @@
       <End Role="Event" EntitySet="Events" />
       <End Role="EventRequest" EntitySet="EventRequests" />
     </AssociationSet>
+    <AssociationSet Name="UserFeedback" Association="NCRSocialNetworkDataModel.Store.UserFeedback">
+      <End Role="User" EntitySet="Users" />
+      <End Role="Feedback" EntitySet="Feedbacks" />
+    </AssociationSet>
   </EntityContainer>
   <EntityType Name="Users">
     <Key>
@@ -119,7 +124,7 @@
     <Property Name="EventDescription" Type="nvarchar(max)" Nullable="false" />
     <Property Name="EventClubId" Type="int" Nullable="false" />
     <Property Name="EventVenue" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="EventDateTime" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="EventDateTime" Type="datetime" Nullable="true" />
     <Property Name="EventEventRequestId" Type="int" Nullable="true" />
     <Property Name="EventCreatedBy" Type="int" Nullable="false" />
     <Property Name="EventCreatedTime" Type="datetime" Nullable="false" />
@@ -187,6 +192,15 @@
     <Property Name="ClubModeratorId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="ClubModeratorClubID" Type="int" Nullable="false" />
     <Property Name="ClubModeratorUserId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Feedbacks">
+    <Key>
+      <PropertyRef Name="FeedbackId" />
+    </Key>
+    <Property Name="FeedbackId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FeedbackUserId" Type="int" Nullable="false" />
+    <Property Name="FeedbackDescription" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="FeedbackCreatedDate" Type="nvarchar(max)" Nullable="false" />
   </EntityType>
   <Association Name="UserEventCreated">
     <End Role="User" Type="NCRSocialNetworkDataModel.Store.Users" Multiplicity="1" />
@@ -392,6 +406,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="UserFeedback">
+    <End Role="User" Type="NCRSocialNetworkDataModel.Store.Users" Multiplicity="1" />
+    <End Role="Feedback" Type="NCRSocialNetworkDataModel.Store.Feedbacks" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="Feedback">
+        <PropertyRef Name="FeedbackUserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
 </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -475,6 +501,11 @@
             <End Role="Event" EntitySet="Events" />
             <End Role="EventRequest" EntitySet="EventRequests" />
           </AssociationSet>
+          <EntitySet Name="Feedbacks" EntityType="NCRSocialNetworkDataModel.Feedback" />
+          <AssociationSet Name="UserFeedback" Association="NCRSocialNetworkDataModel.UserFeedback">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Feedback" EntitySet="Feedbacks" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="User">
           <Key>
@@ -497,6 +528,7 @@
           <NavigationProperty Name="ClubSubscribe" Relationship="NCRSocialNetworkDataModel.UserClubSubscribe" FromRole="User" ToRole="ClubSubscribe" />
           <NavigationProperty Name="EventAttendings" Relationship="NCRSocialNetworkDataModel.UserEventAttending" FromRole="User" ToRole="EventAttending" />
           <NavigationProperty Name="ClubModerators" Relationship="NCRSocialNetworkDataModel.UserClubModerator1" FromRole="User" ToRole="ClubModerator" />
+          <NavigationProperty Name="Feedbacks" Relationship="NCRSocialNetworkDataModel.UserFeedback" FromRole="User" ToRole="Feedback" />
         </EntityType>
         <EntityType Name="Club">
           <Key>
@@ -522,7 +554,7 @@
           <Property Type="String" Name="EventDescription" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
           <Property Type="Int32" Name="EventClubId" Nullable="false" />
           <Property Type="String" Name="EventVenue" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
-          <Property Type="String" Name="EventDateTime" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Type="DateTime" Name="EventDateTime" Nullable="true" />
           <Property Type="Int32" Name="EventEventRequestId" Nullable="true" />
           <Property Type="Int32" Name="EventCreatedBy" Nullable="false" />
           <Property Type="DateTime" Name="EventCreatedTime" Nullable="false" Precision="3" />
@@ -817,6 +849,28 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="Feedback">
+          <Key>
+            <PropertyRef Name="FeedbackId" />
+          </Key>
+          <Property Type="Int32" Name="FeedbackId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="FeedbackUserId" Nullable="false" />
+          <Property Type="String" Name="FeedbackDescription" Nullable="false" />
+          <Property Type="String" Name="FeedbackCreatedDate" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="NCRSocialNetworkDataModel.UserFeedback" FromRole="Feedback" ToRole="User" />
+        </EntityType>
+        <Association Name="UserFeedback">
+          <End Type="NCRSocialNetworkDataModel.User" Role="User" Multiplicity="1" />
+          <End Type="NCRSocialNetworkDataModel.Feedback" Role="Feedback" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="Feedback">
+              <PropertyRef Name="FeedbackUserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -933,6 +987,16 @@
           <ScalarProperty Name="ClubModeratorId" ColumnName="ClubModeratorId" />
           <ScalarProperty Name="ClubModeratorClubID" ColumnName="ClubModeratorClubID" />
           <ScalarProperty Name="ClubModeratorUserId" ColumnName="ClubModeratorUserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Feedbacks">
+      <EntityTypeMapping TypeName="IsTypeOf(NCRSocialNetworkDataModel.Feedback)">
+        <MappingFragment StoreEntitySet="Feedbacks">
+          <ScalarProperty Name="FeedbackId" ColumnName="FeedbackId" />
+          <ScalarProperty Name="FeedbackUserId" ColumnName="FeedbackUserId" />
+          <ScalarProperty Name="FeedbackDescription" ColumnName="FeedbackDescription" />
+          <ScalarProperty Name="FeedbackCreatedDate" ColumnName="FeedbackCreatedDate" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

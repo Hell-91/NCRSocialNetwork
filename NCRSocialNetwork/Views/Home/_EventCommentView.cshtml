@@ -1,4 +1,4 @@
 ﻿<div class="event-comment">
-    <img src="@ViewBag.Imagelink" alt="" width="45em" height="45em">
-    <p>@ViewBag.Comment</p>
+    <a href="/UserProfile/@ViewBag.UserId"><img src="@ViewBag.Imagelink" alt="" width="45em"></a>
+    <p><a href="/UserProfile/@ViewBag.UserId">@ViewBag.UserName</a>@ViewBag.Comment</p>
 </div>

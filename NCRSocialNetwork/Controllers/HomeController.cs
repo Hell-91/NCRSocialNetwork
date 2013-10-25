@@ -37,6 +37,7 @@ namespace NCRSocialNetwork.Controllers
             {
                 return RedirectToAction("Create", "Profile");                
             }
+            var userId = dbConn.Users.Where(u => u.UserQuicklookId == name).First().UserId;
             var viewModel = new HomeViewModel();
             viewModel.Clubs = new List<Club>();
             viewModel.Events = new List<Event>();
@@ -47,11 +48,27 @@ namespace NCRSocialNetwork.Controllers
 
             if (dbConn.Clubs.ToList().Count() > 0)
             {
-                viewModel.Clubs = dbConn.Clubs.ToList();                
+                 var Clubs = dbConn.Clubs.ToList();
+                 var ClubsSubscribed = dbConn.ClubSubscribes.Where(c => c.ClubSubscribeUserId == userId).ToList();
+                 var ClubsModerator = dbConn.ClubModerators.Where(m => m.ClubModeratorUserId == userId).ToList();
+                 foreach (var Club in Clubs)
+                 {
+                     if(ClubsSubscribed.Where(c => c.ClubSubscribeClubId == Club.ClubId).Count() > 0 || ClubsModerator.Where(c => c.ClubModeratorClubID == Club.ClubId).Count() > 0)
+                     {
+                         viewModel.Clubs.Add(Club);                     
+                     }             
+                 }
             }
             if (dbConn.Events.ToList().Count() > 0)
             {
-                viewModel.Events = dbConn.Events.ToList();
+                var Events = dbConn.Events.ToList();
+                foreach (var Event in Events)
+                {
+                    if (viewModel.Clubs.Where(c => c.ClubId == Event.EventClubId).Count() > 0)
+                    {
+                        viewModel.Events.Add(Event);                    
+                    }
+                }
             }
             if (dbConn.Comments.ToList().Count() > 0)
             {
@@ -87,8 +104,10 @@ namespace NCRSocialNetwork.Controllers
                 dbConn.Comments.Add(eventcomment);
                 dbConn.SaveChanges();
             }
-            ViewBag.Comment = UserName + ": " + UserComment;
+            ViewBag.Comment = UserComment;
+            ViewBag.UserId = UserId;
             ViewBag.Imagelink = dbConn.Users.Where(u => u.UserId == UserId).First().UserDisplayPicture;
+            ViewBag.UserName = UserName + ": ";
             return PartialView("_EventCommentView");
         }
 

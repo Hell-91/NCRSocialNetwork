@@ -46,7 +46,7 @@
 					        <td>@Event.User.UserFirstName</td>
 					        <td>                                
 						        <input type="button" onclick="showAddEvent('@i')" id="" value="Add" 
-                                    @if(Event.EventRequestFlag == "false")
+                                    @if(Event.EventRequestFlag == "true")
                                     { 
                                         @Html.Raw("disabled") 
                                     }
@@ -148,7 +148,7 @@
                             <td>@Club.ClubSubscribe.Count()</td>
 					        <td>@Club.Events.Count()</td>
 					        <td>
-						        <input type="button" value="Edit"/>
+						        <input onclick="@Html.Raw("showEditClub("+j+")")" type="button" value="Edit"/>
 					        </td>
 				        </tr>
                         {
@@ -156,6 +156,25 @@
                         }
                     }
 			    </table>
+                var i = 1;
+                foreach (var Club in @Model.Clubs)
+                {                     
+                    <form class="form-settings hidden" action="~/Club/Edit/@Club.ClubId" method="post" enctype="multipart/form-data" id="C_@i">
+	                    <div class="form_settings">
+			                <p><span>Club Name:</span> <input type = 'text' id="EditClubName" name='ClubName' value="@Club.ClubName"/></p>
+			                <p><span>Description:</span> <textarea id="EditClubDescription" name="ClubDescription">@Club.ClubDescription</textarea></p>
+			                <p style="margin-top: 3.5em;"><span>Club Thumbnail:</span><input type = 'file' id="EditClubThumbnailPath" name='ClubThumbnailPath'style="float:right;" /></p>
+			                <p><span>Club Image:</span> <input type = 'file' id="EditClubImagePath" name='ClubImagePath' style="float:right;"/></p>
+                            <input id="EditClubId" name="ClubId" value="@Club.ClubId" hidden />
+			                <p><span>&nbsp</span>
+                                <input class = 'submit' type = 'submit' value = 'Submit'>
+				                <input class = 'submit' type = 'reset' value = 'Clear'>
+			                </p>
+		                </div>
+	                </form>  
+                    i++;             
+                }                
+                <input type="text" value="@i" id="totalClubs" hidden />
             }
 		</div> 
 
@@ -192,40 +211,41 @@
         @if(Model.BaseUser.UserRole == "Admin")
         { 
             <div class="all-data-div" id="tab-5" >
-			<form class="form-settings" action="/NCRSocialNetwork/Moderator/Create" method="post" >
-	            <div class="form_settings">
-			        <p><span>Club: </span><select id = "ClubModeratorClubID" name = "ClubModeratorClubID" >
-                            @foreach (var Club in @Model.Clubs)
-                            {
-                                <option value="@Club.ClubId" onclick="admin_club(@Club.ClubId)">@Club.ClubName</option>
-                            }
-		                </select>
-		            </p>
-                    <p><span>Moderator Name:</span>
-                        <input type="text" id="ClubModeratorUserId" name="ModeratorUserId"/>
-                    </p>
-			        <p><span>&nbsp</span>
-                        <input class = 'submit' type = 'submit' value = 'Submit'>
-			            <input class = 'submit' type = 'reset' value = 'Clear'>
-			        </p>
-		        </div>
-	        </form>
-		</div> 
+			    <form class="form-settings" action="/NCRSocialNetwork/Moderator/Create" method="post" >
+	                <div class="form_settings">
+			            <p><span>Club: </span>
+                            <select id = "ClubModeratorClubID" name = "ClubModeratorClubID" >
+                                @foreach (var Club in @Model.Clubs)
+                                {
+                                    <option value="@Club.ClubId" onclick="admin_club(@Club.ClubId)">@Club.ClubName</option>
+                                }
+		                    </select>
+		                </p>
+                        <p><span>Moderator Name:</span>
+                            <input type="text" id="ClubModeratorUserId" name="ModeratorUserId"/>
+                        </p>
+			            <p><span>&nbsp</span>
+                            <input class = 'submit' type = 'submit' value = 'Submit'>
+			                <input class = 'submit' type = 'reset' value = 'Clear'>
+			            </p>
+		            </div>
+	            </form>
+		    </div> 
                 
             <div class="all-data-div" id="tab-6" >
-			<form class="form-settings" action="/NCRSocialNetwork/Club/Create" method="post" enctype="multipart/form-data">
-	            <div class="form_settings">
-			        <p><span>Club Name:</span> <input type = 'text' id="ClubName" name='ClubName' /></p>
-			        <p><span>Description:</span> <textarea id="ClubDescription" name="ClubDescription"></textarea></p>
-			        <p style="margin-top: 3.5em;"><span>Club Thumbnail:</span><input type = 'file' id="ClubThumbnailPath" name='ClubThumbnailPath'style="float:right;" /></p>
-			        <p><span>Club Image:</span> <input type = 'file' id="ClubImagePath" name='ClubImagePath' style="float:right;"/></p>
-			        <p><span>&nbsp</span>
-                        <input class = 'submit' type = 'submit' value = 'Submit'>
-				        <input class = 'submit' type = 'reset' value = 'Clear'>
-			        </p>
-		        </div>
-	        </form>
-		</div> 
+			    <form class="form-settings" action="/NCRSocialNetwork/Club/Create" method="post" enctype="multipart/form-data">
+	                <div class="form_settings">
+			            <p><span>Club Name:</span> <input type = 'text' id="ClubName" name='ClubName' /></p>
+			            <p><span>Description:</span> <textarea id="ClubDescription" name="ClubDescription"></textarea></p>
+			            <p style="margin-top: 3.5em;"><span>Club Thumbnail:</span><input type = 'file' id="ClubThumbnailPath" name='ClubThumbnailPath'style="float:right;" /></p>
+			            <p><span>Club Image:</span> <input type = 'file' id="ClubImagePath" name='ClubImagePath' style="float:right;"/></p>
+			            <p><span>&nbsp</span>
+                            <input class = 'submit' type = 'submit' value = 'Submit'>
+				            <input class = 'submit' type = 'reset' value = 'Clear'>
+			            </p>
+		            </div>
+	            </form>
+		    </div> 
         }
     </div>
     <br />
@@ -245,12 +265,20 @@
 	<article class="article_data">
          @foreach (var Club in @Model.Clubs)
          {
-		    @Html.ActionLink(@Club.ClubName, @Club.ClubId.ToString(), "Clubs")
+		    @Html.ActionLink(@Club.ClubName, @Club.ClubName, "Clubs")
          }
 	</article>	
+
+    <h3>Administrators</h3>
+    <article class="article_data">
+
+    </article>
     
     <h3>Moderators</h3>		
     <article class="article_data">
-
+        @foreach(var Moderator in @Model.ClubModerators)
+        {
+            @Html.ActionLink(@Moderator.User.UserFirstName + @Moderator.User.UserLastName, @Moderator.ClubModeratorId.ToString(), "/Profile/Details/");
+        }
     </article>			
 }

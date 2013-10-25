@@ -1,0 +1,49 @@
+﻿@model NCRSocialNetwork.ViewModels.FeedbackViewModel
+
+@{
+    ViewBag.Title = "Feedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="articles-section">
+    <form class="form-settings" action="/NCRSocialNetwork/Feedback/PostFeedback" method="post">
+        <div class="form_settings">
+            <input id="FeedbackUserId"  name="FeedbackUserId" value="@Model.BaseUser.UserId" hidden />
+		    <p><span>Description:</span> <textarea id="FeedbackDescription" name="FeedbackDescription"></textarea></p>
+		    <p style="margin-top: 4em;"><span>&nbsp</span>
+                 <input class = 'submit' type = 'submit' value = 'Submit'>
+		        <input class = 'submit' type = 'reset' value = 'Clear'>
+		     </p>
+	    </div>
+    </form>
+
+    @if (Model.BaseUser.UserRole == "Admin")
+    {
+        if (Model.Feedback.Count() > 0)
+        {
+            <table>
+                <tr>
+                    <th>S. No</th>
+                    <th>QuicklookId</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+                @{var i = 1;}
+                @foreach(var feedback in @Model.Feedback)
+                {
+                    <tr>
+                        <td>@i</td>
+                        <td>@feedback.User.UserQuicklookId</td>
+                        <td>@feedback.User.UserFirstName @feedback.User.UserLastName</td>
+                        <td style="max-width: 400px;word-break:break-all;">@feedback.FeedbackDescription</td>
+                    </tr>           
+                }
+            </table>    
+        }
+    }
+    <br />
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

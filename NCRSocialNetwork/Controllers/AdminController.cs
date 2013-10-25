@@ -62,6 +62,15 @@ namespace NCRSocialNetwork.Controllers
             if (dbConn.Users.ToList().Count() > 0)
             {
                 viewModel.ClubModerators = dbConn.ClubModerators.ToList();
+                var temp = viewModel.ClubModerators;
+                viewModel.ClubModerators.Clear();
+                foreach (var v in temp)
+                {
+                    if (v.User.UserRole != "Admin")
+                    {
+                        viewModel.ClubModerators.Add(v);
+                    }
+                }
             }
 
             return View(viewModel);

@@ -97,7 +97,7 @@ namespace NCRSocialNetwork.Controllers
 
             if (user.UserDisplayPicture == null)
             {
-                user.UserDisplayPicture = "/NCRSocialNetwork/Content/Images/profile-picture_01.png";
+                user.UserDisplayPicture = "/NCRSocialNetwork/Content/Images/UserDisplayPicture.png";
             }
 
             if (ModelState.IsValid)

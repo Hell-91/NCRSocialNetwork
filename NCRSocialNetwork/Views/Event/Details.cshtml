@@ -46,8 +46,8 @@
         <p><b>Event: </b> @Model.Event.EventName</p>
 	    <p><b>Description:</b>  @Model.Event.EventDescription</p>
 	    <p><b>Club:</b> @Model.Event.Club.ClubName</p>
-	    <p><b>Date:</b>  @Model.Event.EventCreatedTime.ToString("ddd d MMM")</p>
-        <p><b>Time:</b> @Model.Event.EventCreatedTime.ToString("HH:mm") Hrs </p>
+	    <p><b>Date:</b>  @Model.Event.EventDateTime.ToString("ddd d MMM")</p>
+        <p><b>Time:</b> @Model.Event.EventDateTime.ToString("HH:mm")  Hrs</p>
 	    <p><b>Venue:</b>  @Model.Event.EventVenue</p>
         <br />
 	</div>
@@ -74,11 +74,11 @@
 		                    <div id="event-image" class="event-image">
 			                    @if(@Comment.User.UserDisplayPicture != null) 
                                 {
-                                    <img src="@Url.Content(@Comment.User.UserDisplayPicture)" alt="" width="60em" />
+                                    <a href="/NCRSocialNetwork/UserProfile/@Comment.User.UserId"><img src="@Url.Content(@Comment.User.UserDisplayPicture)" alt="" width="60em" /></a>
                                 }
                                 else 
                                 {
-		                            <img src='@Url.Content("/Content/Images/profile-picture_07.png")' alt="" width = "65%">	
+		                            <a><img src='@Url.Content("/Content/Images/profile-picture_07.png")' alt="" width = "65%">	</a>
                                 }
 		                    </div>
 		                    <div id="event-data" class="event-data">

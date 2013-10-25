@@ -52,6 +52,8 @@ public partial class NCRSNEntity : DbContext
 
     public DbSet<ClubModerator> ClubModerators { get; set; }
 
+    public DbSet<Feedback> Feedbacks { get; set; }
+
 }
 
 }

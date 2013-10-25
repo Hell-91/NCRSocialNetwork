@@ -37,6 +37,8 @@ public partial class User
 
         this.ClubModerators = new HashSet<ClubModerator>();
 
+        this.Feedbacks = new HashSet<Feedback>();
+
     }
 
 
@@ -75,6 +77,8 @@ public partial class User
     public virtual ICollection<EventAttending> EventAttendings { get; set; }
 
     public virtual ICollection<ClubModerator> ClubModerators { get; set; }
+
+    public virtual ICollection<Feedback> Feedbacks { get; set; }
 
 }
 

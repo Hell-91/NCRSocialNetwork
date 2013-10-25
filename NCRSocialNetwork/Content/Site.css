@@ -289,6 +289,11 @@ a.active{
 	font-size: 0.8em;
 }
 
+.p_hover:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
 .comments {
     width: 100%;
 }
@@ -405,13 +410,12 @@ input[type="button"]:active, input[type="submit"]:active, .all-data-div a:active
 div#image-slider-window {
 	position: relative;
 	overflow: hidden;
-	margin-left: 1em;
-	margin-right: 1em;
     height: 320px;
 }
 
 #image-slider-window img {
 	float: left;
+    box-shadow: black 1em 1em;
 }
 
 figure#imagestrip {

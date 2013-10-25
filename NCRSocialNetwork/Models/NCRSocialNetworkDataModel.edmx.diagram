@@ -32,6 +32,8 @@
         <AssociationConnector Association="NCRSocialNetworkDataModel.ClubClubModerator" />
         <AssociationConnector Association="NCRSocialNetworkDataModel.UserClubModerator1" />
         <AssociationConnector Association="NCRSocialNetworkDataModel.EventEventRequest" />
+        <EntityTypeShape EntityType="NCRSocialNetworkDataModel.Feedback" Width="1.5" PointX="10.625" PointY="4.625" />
+        <AssociationConnector Association="NCRSocialNetworkDataModel.UserFeedback" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
